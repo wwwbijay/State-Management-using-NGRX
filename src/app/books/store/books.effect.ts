@@ -3,11 +3,11 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { EMPTY, map, mergeMap, switchMap, withLatestFrom } from 'rxjs';
 import { BooksService } from '../books.service';
-import { booksFetchAPISuccess, invokeBooksAPI, invokeSaveNewBookAPI, saveNewBookAPISucess } from './books.action';
+import { booksFetchAPISuccess, invokeBooksAPI, invokeSaveNewBookAPI, invokeUpdateBookAPI, saveNewBookAPISucess, updateBookAPISucess } from './books.action';
 import { selectBooks } from './books.selector';
 import { setAPIStatus } from 'src/app/shared/store/app.action';
 import { Appstate } from 'src/app/shared/store/appstate';
- 
+
 @Injectable()
 export class BooksEffect {
   constructor(
@@ -15,8 +15,8 @@ export class BooksEffect {
     private booksService: BooksService,
     private store: Store,
     private appStore: Store<Appstate>
-  ) {}
- 
+  ) { }
+
   loadAllBooks$ = createEffect(() =>
     this.actions$.pipe(
       ofType(invokeBooksAPI),
@@ -53,5 +53,26 @@ export class BooksEffect {
     );
   });
 
-  
+  updateBookAPI$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(invokeUpdateBookAPI),
+      switchMap((action) => {
+        this.appStore.dispatch(
+          setAPIStatus({ apiStatus: { apiResponseMessage: '', apiStatus: '' } })
+        );
+        return this.booksService.update(action.updateBook).pipe(
+          map((data) => {
+            this.appStore.dispatch(
+              setAPIStatus({
+                apiStatus: { apiResponseMessage: '', apiStatus: 'success' },
+              })
+            );
+            return updateBookAPISucess({ updateBook: data });
+          })
+        );
+      })
+    );
+  });
+
+
 }

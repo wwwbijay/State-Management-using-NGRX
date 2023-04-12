@@ -16,4 +16,13 @@ export class BooksService {
   create(payload: Books) {
     return this.http.post<Books>('http://localhost:3000/books', payload);
   }
+
+  update(payload: Books) {
+    return this.http.put<Books>(
+      `http://localhost:3000/books/${payload.id}`,
+      payload
+    );
+  }
+
+
 }
