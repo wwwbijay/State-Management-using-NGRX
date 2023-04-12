@@ -24,5 +24,9 @@ export class BooksService {
     );
   }
 
+  delete(id: number) {
+    return this.http.delete(`http://localhost:3000/books/${id}`);
+  }
+
 
 }

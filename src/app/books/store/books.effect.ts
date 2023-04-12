@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
 import { EMPTY, map, mergeMap, switchMap, withLatestFrom } from 'rxjs';
 import { BooksService } from '../books.service';
-import { booksFetchAPISuccess, invokeBooksAPI, invokeSaveNewBookAPI, invokeUpdateBookAPI, saveNewBookAPISucess, updateBookAPISucess } from './books.action';
+import { booksFetchAPISuccess, deleteBookAPISuccess, invokeBooksAPI, invokeDeleteBookAPI, invokeSaveNewBookAPI, invokeUpdateBookAPI, saveNewBookAPISucess, updateBookAPISucess } from './books.action';
 import { selectBooks } from './books.selector';
 import { setAPIStatus } from 'src/app/shared/store/app.action';
 import { Appstate } from 'src/app/shared/store/appstate';
@@ -68,6 +68,27 @@ export class BooksEffect {
               })
             );
             return updateBookAPISucess({ updateBook: data });
+          })
+        );
+      })
+    );
+  });
+
+  deleteBooksAPI$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(invokeDeleteBookAPI),
+      switchMap((actions) => {
+        this.appStore.dispatch(
+          setAPIStatus({ apiStatus: { apiResponseMessage: '', apiStatus: '' } })
+        );
+        return this.booksService.delete(actions.id).pipe(
+          map(() => {
+            this.appStore.dispatch(
+              setAPIStatus({
+                apiStatus: { apiResponseMessage: '', apiStatus: 'success' },
+              })
+            );
+            return deleteBookAPISuccess({ id: actions.id });
           })
         );
       })
