@@ -1,0 +1,16 @@
+{
+  "books": [
+    {
+      "id": 1,
+      "name": "Harry Porter",
+      "author": "J.K. Roulings",
+      "cost": 400
+    },
+    {
+      "id": 2,
+      "author": "kasdnjasd",
+      "name": "Test Book",
+      "cost": 400
+    }
+  ]
+}
